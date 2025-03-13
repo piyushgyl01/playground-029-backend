@@ -10,12 +10,15 @@ const User = require("./models/users.model.js");
 const Post = require("./models/post.model.js");
 
 const app = express();
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173",
+    "https://playground-029-frontend.vercel.app",
+  ],
   credentials: true,
   optionSuccessStatus: 200,
 };
@@ -28,7 +31,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 initialiseDatabase();
 
 const verifyToken = (req, res, next) => {
-  const token = req.headers.Authorization?.split(" ")[1];
+  const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
     console.log("Access denied. Provied the token");
