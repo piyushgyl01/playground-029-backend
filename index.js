@@ -4,15 +4,21 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const passport = require("passport");
 
 const { initialiseDatabase } = require("./db/db.connect.js");
 const User = require("./models/users.model.js");
 const Post = require("./models/post.model.js");
 
+const authRoutes = require("./routes/auth.routes");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+require("./config/passport")(passport);
+app.use(passport.initialize());
 
 const corsOptions = {
   origin: [
@@ -239,6 +245,9 @@ app.delete("/posts/:id", verifyToken, async (req, res) => {
       .json({ message: "Error deleting the post", error: error.message });
   }
 });
+
+app.use("/auth", authRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`App is running on ${PORT}`);
